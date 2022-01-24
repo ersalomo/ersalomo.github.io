@@ -160,21 +160,32 @@
         </div>
         <div class="row justify-content-center">
           <div class="col-md-5">
-            <form>
+            <div class="alert alert-success alert-dismissible fade show d-none my-alert" role="alert">
+              <strong>Thank You!</strong> Pesan anda telah terkirim!
+              <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+
+              </button>
+            </div>
+            <form name="submit-to-google-sheet">
               <div class="mb-3">
                 <label for="nama" class="form-label">Nama Lengkap</label>
-                <input type="text" class="form-control" id="nama" aria-describedby="emailHelp" />
+                <input type="text" name="nama" class="form-control" id="nama" aria-describedby="emailHelp" />
               </div>
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="email" />
+                <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="email" />
               </div>
               <div class="mb-3">
                 <label for="pesan" class="form-label">Message</label>
-                <textarea name="" id="pesan" cols="" class="form-control" rows="3"></textarea>
+                <textarea name="pesan" id="pesan" cols="" class="form-control" rows="3"></textarea>
               </div>
 
-              <button type="submit" class="btn btn-primary">Kirim</button>
+              <button type="submit" class="btn btn-primary btn-kirim">Kirim</button>
+              <button class="btn btn-primary btn-loading d-none" type="button" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"> 
+                </span>
+                Loading....
+              </button>
             </form>
           </div>
         </div>
@@ -198,6 +209,33 @@
     <!-- end footer -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbxbi_hCyR8k701hdFfTCn1PtOX_ZzpMrA9D5KtUnJ4Cnwl3SG-w7zMlvgGaWZh89fai/exec';
+      const form = document.forms['submit-to-google-sheet'];
+      const btnKirim = document.querySelector('.btn-kirim');
+      const btn_load  = document.querySelector('.btn-loading');
+      const myAlert = document.querySelector('.my-alert');
+    
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        //ketika button di klick dan selama belum sukses, hide tombol kirim
+        btn_load.classList.toggle('d-none');
+        btnKirim.classList.toggle('d-none');
+
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+          .then(response => {
+            //tampilkan btn kitim dan hide tombol loading
+             btn_load.classList.toggle('d-none');
+             btnKirim.classList.toggle('d-none');
+            //tampilkan alert
+            myAlert.classList.toggle('d-none');
+            //reset form data
+            form.reset();
+            console.log('Success!', response)
+        })
+          .catch(error => console.error('Error!', error.message))
+      })
+    </script>
   </body>
 </html>
 <!-- 
