@@ -11,3 +11,9 @@ section {
 footer {
   background: #0d6efd;
 }
+.gallery-img {
+  width: 100%;
+}
+#gallery .row > * {
+  padding: 0;
+}
